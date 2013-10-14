@@ -775,7 +775,6 @@
           /* ********************************* */          
           // Break loop if only showing one error per field
           if( this.options.oneOnly){
-            console.log("one only: ", this.options.oneOnly);
             break;
           }
 
@@ -783,7 +782,7 @@
           this.removeError( this.constraints[ constraint ].name );
           valid = false !== valid;
         }
-      } 
+      }
 
       this.valid = valid;
 
@@ -904,8 +903,22 @@
             this.Validator.messages[ constraintName ][ constraint.requirements ] : ( 'undefined' === typeof this.Validator.messages[ constraintName ] ?
               this.Validator.messages.defaultMessage : this.Validator.formatMesssage( this.Validator.messages[ constraintName ], constraint.requirements ) ) );
 
-      // add liError if not shown. Do not add more than once custom errorMessage if exist
-      if ( !$( this.ulError + ' .' + liClass ).length ) {
+
+
+
+      /* ********************************* */
+      /* GPYR-PARSLEY - Added by Christian */
+      /* ********************************* */
+      
+      // add liError if not shown. 
+      // Refresh message if it already shown (in case of updated message strings)
+      var $existingError = $( this.ulError + ' .' + liClass );
+
+      if ( $existingError.length > 0 ) {
+        $existingError.text(message);
+      }
+
+      else{
         liError[ liClass ] = message;
         this.addError( liError );
       }
