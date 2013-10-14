@@ -763,22 +763,28 @@
     */
     , manageValidationResult: function () {
       var valid = null;
+      var showNoMoreErrors = false;
+
+
 
       for ( var constraint in this.constraints ) {
-        if ( false === this.constraints[ constraint ].valid ) {
+
+        /* ************************************ */
+        /* GPYR-PARSLEY - Modified by Christian */
+        /*                                      */
+        /* Added option to show only one error  */
+        /* at a time.                           */
+        /* ************************************ */          
+        if ( false === this.constraints[ constraint ].valid  && !showNoMoreErrors) {
           
           this.manageError( this.constraints[ constraint ] );
           valid = false;
 
-          /* ********************************* */
-          /* GPYR-PARSLEY - Added by Christian */
-          /* ********************************* */          
-          // Break loop if only showing one error per field
-          if( this.options.oneOnly){
-            break;
-          }
+          if( this.options.oneOnly)
+            showNoMoreErrors = true;
+        }
 
-        } else if ( true === this.constraints[ constraint ].valid ) {
+        else if ( true === this.constraints[ constraint ].valid ) {
           this.removeError( this.constraints[ constraint ].name );
           valid = false !== valid;
         }
@@ -880,6 +886,7 @@
     * @param {Object} constraint
     */
     , manageError: function ( constraint ) {
+    
       // display ulError container if it has been removed previously (or never shown)
       if ( !$( this.ulError ).length ) {
         this.manageErrorContainer();
@@ -905,11 +912,10 @@
 
 
 
-
       /* ********************************* */
       /* GPYR-PARSLEY - Added by Christian */
       /* ********************************* */
-      
+
       // add liError if not shown. 
       // Refresh message if it already shown (in case of updated message strings)
       var $existingError = $( this.ulError + ' .' + liClass );
@@ -920,6 +926,11 @@
 
       else{
         liError[ liClass ] = message;
+
+        // If option set to show only one error at a time, clear the whole list first
+        if( this.options.oneOnly )
+          $(this.ulError).empty();
+
         this.addError( liError );
       }
     }
