@@ -2,3 +2,9 @@
 
 bower_components/*
 doc/*
+node_modules/*
+grunt.lnk
+gruntfile.js
+package.json
+
+parsley.min.js

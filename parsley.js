@@ -3,9 +3,9 @@
  *
  * Author: Guillaume Potier - @guillaumepotier
 */
-
+ 
 !function ($) {
-
+  
   'use strict';
 
   /**
@@ -766,13 +766,24 @@
 
       for ( var constraint in this.constraints ) {
         if ( false === this.constraints[ constraint ].valid ) {
+          
           this.manageError( this.constraints[ constraint ] );
           valid = false;
+
+          /* ********************************* */
+          /* GPYR-PARSLEY - Added by Christian */
+          /* ********************************* */          
+          // Break loop if only showing one error per field
+          if( this.options.oneOnly){
+            console.log("one only: ", this.options.oneOnly);
+            break;
+          }
+
         } else if ( true === this.constraints[ constraint ].valid ) {
           this.removeError( this.constraints[ constraint ].name );
           valid = false !== valid;
         }
-      }
+      } 
 
       this.valid = valid;
 
@@ -1349,6 +1360,12 @@
       , onFieldError: function ( elem, constraints, ParsleyField ) {}     // Executed when a field is detected as invalid
       , onFieldSuccess: function ( elem, constraints, ParsleyField ) {}   // Executed when a field passes validation
     }
+
+
+    /* ********************************* */
+    /* GPYR-PARSLEY - Added by Christian */
+    /* ********************************* */
+    , oneOnly: false   //Whether to show only one error message per field, or multiple
   };
 
   /* PARSLEY auto-bind DATA-API + Global config retrieving
