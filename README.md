@@ -1,12 +1,9 @@
-﻿#Parsley.js
+#GPYR fork of Parsley.js
 
-[![Build Status](https://travis-ci.org/guillaumepotier/Parsley.js.png?branch=master)](https://travis-ci.org/guillaumepotier/Parsley.js)
-
-Javascript form validation, without actually writing a single line of javascript!
+---------
+#BELOW IS COPIED FROM ORIGINAL
 
 #TODOs
-
-See TODO.md
 
 #Curent Stable Version
 
