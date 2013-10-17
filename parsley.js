@@ -5,10 +5,10 @@
  *
  * Author: Guillaume Potier - @guillaumepotier
 */
-  
+
 !function ($) {
-  
-  'use strict'; 
+
+  'use strict';
 
   /**
   * Validator class stores all constraints functions and associated messages.
@@ -613,8 +613,8 @@
     * @method eventValidation
     * @param {Object} event jQuery event
     */
-    , eventValidation: function ( event ) {  
-      var val = this.getVal(); 
+    , eventValidation: function ( event ) {
+      var val = this.getVal();
 
       // do nothing on keypress event if not explicitely passed as data-trigger and if field has not already been validated once
       if ( event.type === 'keyup' && !/keyup/i.test( this.options.trigger ) && !this.validatedOnce ) {
@@ -777,12 +777,12 @@
         /*                                      */
         /* Added option to show only one error  */
         /* at a time.                           */
-        /* ************************************ */          
+        /* ************************************ */
         if ( false === this.constraints[ constraint ].valid  && !showNoMoreErrors) {
-          
+
           valid = false;
           errorShown = this.manageError( this.constraints[ constraint ] );
-          
+
           if( errorShown && this.options.oneOnly)
             showNoMoreErrors = true;
         }
@@ -895,9 +895,9 @@
     /* Function now returns:                */
     /*   true - error was shown             */
     /*   false - error not shown or removed */
-    /* ************************************ */       
+    /* ************************************ */
     , manageError: function ( constraint ) {
-    
+
       // display ulError container if it has been removed previously (or never shown)
       if ( !$( this.ulError ).length ) {
         this.manageErrorContainer();
@@ -927,7 +927,7 @@
       /* GPYR-PARSLEY - Added by Christian */
       /* ********************************* */
 
-      // add liError if not shown. 
+      // add liError if not shown.
       // Refresh message if it already shown (in case of updated message strings)
       var $existingError = $( this.ulError + ' .' + liClass );
 
@@ -1228,17 +1228,35 @@
       if ( this.focusedField && !valid ) {
         // Scroll smoothly
         if ( this.options.scrollDuration > 0 ) {
-          var that = this,
-              top = this.focusedField.offset().top - $( window ).height() / 2; // Center the window on the field
+          var that = null;
+          var windowElm = null;
+          var target = null;
+          var proxy = null;
 
-          $( 'html, body' ).animate( {
-              scrollTop: top
+          that = this;
+          windowElm = $(window);
+
+          target = this.focusedField.data('scroll-target') != null ? $(this.focusedField.data('scroll-target')) : this.focusedField;
+          if (target.is(':visible') == false) {
+            // Find the first visible parent.  Offset won't work reliably if it is hidden.
+            target = target.parents(':visible').eq(0);
+          }
+
+          proxy = {
+            'scrollTop': windowElm.scrollTop()
+          };
+
+          $(proxy).animate({
+            'scrollTop': Math.max(target.offset().top - (windowElm.height() / 2), 0) // Center the window on the field
+          }, {
+            'duration': this.options.scrollDuration,
+            'step': function(now, fx) {
+              windowElm.scrollTop(now);
             },
-            this.options.scrollDuration,
-            function () {
+            'complete': function() {
               that.focusedField.focus();
             }
-          );
+          });
         // Just focus on the field and let the browser do the rest
         } else {
           this.focusedField.focus();
@@ -1398,7 +1416,7 @@
       , onFieldError: function ( elem, constraints, ParsleyField ) {}     // Executed when a field is detected as invalid
       , onFieldSuccess: function ( elem, constraints, ParsleyField ) {}   // Executed when a field passes validation
     }
-  
+
 
     /* ********************************* */
     /* GPYR-PARSLEY - Added by Christian */
