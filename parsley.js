@@ -1,12 +1,14 @@
+/* GPYR MODIFIED */
+
 /*
  * Parsley.js allows you to verify your form inputs frontend side, without writing a line of javascript. Or so..
  *
  * Author: Guillaume Potier - @guillaumepotier
 */
- 
+  
 !function ($) {
   
-  'use strict';
+  'use strict'; 
 
   /**
   * Validator class stores all constraints functions and associated messages.
@@ -611,8 +613,8 @@
     * @method eventValidation
     * @param {Object} event jQuery event
     */
-    , eventValidation: function ( event ) {
-      var val = this.getVal();
+    , eventValidation: function ( event ) {  
+      var val = this.getVal(); 
 
       // do nothing on keypress event if not explicitely passed as data-trigger and if field has not already been validated once
       if ( event.type === 'keyup' && !/keyup/i.test( this.options.trigger ) && !this.validatedOnce ) {
@@ -749,6 +751,7 @@
         valid = false;
       }
 
+
       return valid;
     }
 
@@ -763,8 +766,8 @@
     */
     , manageValidationResult: function () {
       var valid = null;
+      var errorShown = false;
       var showNoMoreErrors = false;
-
 
 
       for ( var constraint in this.constraints ) {
@@ -777,10 +780,10 @@
         /* ************************************ */          
         if ( false === this.constraints[ constraint ].valid  && !showNoMoreErrors) {
           
-          this.manageError( this.constraints[ constraint ] );
           valid = false;
-
-          if( this.options.oneOnly)
+          errorShown = this.manageError( this.constraints[ constraint ] );
+          
+          if( errorShown && this.options.oneOnly)
             showNoMoreErrors = true;
         }
 
@@ -885,6 +888,14 @@
     * @method manageError
     * @param {Object} constraint
     */
+
+    /* ************************************ */
+    /* GPYR-PARSLEY - Modified by Christian */
+    /*                                      */
+    /* Function now returns:                */
+    /*   true - error was shown             */
+    /*   false - error not shown or removed */
+    /* ************************************ */       
     , manageError: function ( constraint ) {
     
       // display ulError container if it has been removed previously (or never shown)
@@ -895,11 +906,11 @@
       // TODO: refacto properly
       // if required constraint but field is not null, do not display
       if ( 'required' === constraint.name && null !== this.getVal() && this.getVal().length > 0 ) {
-        return;
+        return false;
       // if empty required field and non required constraint fails, do not display
       } else if ( this.isRequired && 'required' !== constraint.name && ( null === this.getVal() || 0 === this.getVal().length ) ) {
         this.removeError(constraint.name);
-        return;
+        return false;
       }
 
       // TODO: refacto error name w/ proper & readable function
@@ -933,6 +944,8 @@
 
         this.addError( liError );
       }
+
+      return true;
     }
 
     /**
@@ -1200,6 +1213,7 @@
       var valid = true;
       this.focusedField = false;
 
+
       for ( var item = 0; item < this.items.length; item++ ) {
         if ( 'undefined' !== typeof this.items[ item ] && false === this.items[ item ].validate() ) {
           valid = false;
@@ -1384,7 +1398,7 @@
       , onFieldError: function ( elem, constraints, ParsleyField ) {}     // Executed when a field is detected as invalid
       , onFieldSuccess: function ( elem, constraints, ParsleyField ) {}   // Executed when a field passes validation
     }
-
+  
 
     /* ********************************* */
     /* GPYR-PARSLEY - Added by Christian */
