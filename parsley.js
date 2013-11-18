@@ -1328,10 +1328,47 @@
   * @param {Function} Callback function
   * @return {Mixed} public class method return
   */
-  $.fn.parsley = function ( option, fn ) {
+
+
+  //ADDED ABILITY FOR PARSLEY TO WORK ON JQUERY SETS, NOT JUST SINGLE JQUERY OBJECTS
+  //ADDED OPTION TO RETURN JQUERY OBJECT, SO CAN CHAIN JQUERY (INSTEAD OF RETURNING PARSLEY OBJECT)
+  $.fn.parsley = function(option, fn, returnJQuery){
+
+    var parselyObjects = [];
+    var parsleyReturn;
+
+    //Call parsley on each item in jquery set
+    $.each(this, function(index, el){
+
+      parsleyReturn = realParsley.call($(el), option, fn);
+
+      //Save the returned parsley objects
+      if (!returnJQuery)
+          parselyObjects.push(parsleyReturn);
+    });
+
+
+    if(returnJQuery){
+      return this;
+    }
+
+
+    //Returning parsley
+    else{
+      //Return either a single parsley object, or an array of them
+      if(parselyObjects.length === 1)
+        return parselyObjects[0];
+      else
+        return parselyObjects;
+    }
+
+  };
+
+
+  function realParsley( option, fn ) {
     var options = $.extend( true, {}, $.fn.parsley.defaults, 'undefined' !== typeof window.ParsleyConfig ? window.ParsleyConfig : {}, option, this.data() )
       , newInstance = null;
-
+ 
     function bind ( self, type ) {
       var parsleyInstance = $( self ).data( type );
 
@@ -1375,7 +1412,7 @@
     }
 
     return 'function' === typeof fn ? fn() : newInstance;
-  };
+  }
 
   $.fn.parsley.Constructor = ParsleyForm;
 
