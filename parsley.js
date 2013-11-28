@@ -932,7 +932,7 @@
       var $existingError = $( this.ulError + ' .' + liClass );
 
       if ( $existingError.length > 0 ) {
-        $existingError.text(message);
+        $existingError.html(message);
       }
 
       else{
